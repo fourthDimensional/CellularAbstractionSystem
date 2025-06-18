@@ -29,6 +29,8 @@ class Camera:
         self.smoothing: float = 0.15 # lower is smoother
         self.speed: float = 700
         self.zoom_smoothing: float = 0.2 # lower is smoother
+        self.is_panning: bool = False
+        self.last_mouse_pos: Optional[Sequence[int]] = None
         self.screen_width: int = screen_width
         self.screen_height: int = screen_height
         self.render_buffer: int = render_buffer
@@ -95,3 +97,41 @@ class Camera:
             self.target_zoom /= zoom_factor
 
         self.target_zoom = max(self.max_zoom, min(self.min_zoom, self.target_zoom))
+
+    def start_panning(self, mouse_pos: Sequence[int]) -> None:
+        """
+        Begins panning the camera.
+
+        :param mouse_pos: The current mouse position as a sequence (x, y).
+        """
+        self.is_panning = True
+        self.last_mouse_pos = mouse_pos
+
+    def stop_panning(self) -> None:
+        """
+        Stops panning the camera.
+        """
+        self.is_panning = False
+        self.last_mouse_pos = None
+
+    def reset_position(self) -> None:
+        """
+        Resets the camera position to the origin.
+        """
+        self.target_x = 0
+        self.target_y = 0
+
+    def pan(self, mouse_pos: Sequence[int]) -> None:
+        """
+        Pans the camera based on mouse movement.
+
+        :param mouse_pos: The current mouse position as a sequence (x, y).
+        """
+        if self.is_panning and self.last_mouse_pos:
+            dx = mouse_pos[0] - self.last_mouse_pos[0]
+            dy = mouse_pos[1] - self.last_mouse_pos[1]
+            self.x -= dx / self.zoom
+            self.y -= dy / self.zoom
+            self.target_x = self.x
+            self.target_y = self.y
+            self.last_mouse_pos = mouse_pos
