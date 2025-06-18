@@ -1,0 +1,5 @@
+# Cell physics settings
+MAX_ACCELERATION = 0.125
+MAX_ANGULAR_ACCELERATION = 0.25
+MAX_VELOCITY = 1
+MAX_ROTATIONAL_VELOCITY = 3 # degrees per tick
