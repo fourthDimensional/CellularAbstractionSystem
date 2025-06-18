@@ -135,3 +135,15 @@ class Camera:
             self.target_x = self.x
             self.target_y = self.y
             self.last_mouse_pos = mouse_pos
+
+    def get_real_coordinates(self, screen_x: int, screen_y: int) -> Tuple[float, float]:
+        """
+        Converts screen coordinates to world coordinates.
+
+        :param screen_x: X coordinate on the screen.
+        :param screen_y: Y coordinate on the screen.
+        :return: Tuple of (world_x, world_y).
+        """
+        world_x = (screen_x - self.screen_width // 2 + self.x * self.zoom) / self.zoom
+        world_y = (screen_y - self.screen_height // 2 + self.y * self.zoom) / self.zoom
+        return world_x, world_y
