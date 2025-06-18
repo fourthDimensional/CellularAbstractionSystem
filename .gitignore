@@ -1,0 +1,5 @@
+uv.lock
+.venv/
+.idea/
+.pytest_cache/
+.ruff_cache/
