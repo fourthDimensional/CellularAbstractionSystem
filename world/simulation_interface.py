@@ -147,3 +147,44 @@ class Camera:
         world_x = (screen_x - self.screen_width // 2 + self.x * self.zoom) / self.zoom
         world_y = (screen_y - self.screen_height // 2 + self.y * self.zoom) / self.zoom
         return world_x, world_y
+
+    def is_in_view(self, obj_x: float, obj_y: float, margin: float = 0) -> bool:
+        """
+        Checks if an object is within the camera's view.
+
+        :param obj_x: X coordinate in world space.
+        :param obj_y: Y coordinate in world space.
+        :param margin: Additional margin to expand the view area.
+        :return: True if the object is in view, False otherwise.
+        """
+        half_w = (self.screen_width + (self.render_buffer * self.zoom)) / (2 * self.zoom)
+        half_h = (self.screen_height + (self.render_buffer * self.zoom)) / (2 * self.zoom)
+        cam_left = self.x - half_w
+        cam_right = self.x + half_w
+        cam_top = self.y - half_h
+        cam_bottom = self.y + half_h
+        return (
+                cam_left - margin <= obj_x <= cam_right + margin
+                and cam_top - margin <= obj_y <= cam_bottom + margin
+        )
+
+    def world_to_screen(self, obj_x: float, obj_y: float) -> Tuple[int, int]:
+        """
+        Converts world coordinates to screen coordinates.
+
+        :param obj_x: X coordinate in world space.
+        :param obj_y: Y coordinate in world space.
+        :return: Tuple of (screen_x, screen_y) in pixels.
+        """
+        screen_x = (obj_x - self.x) * self.zoom + self.screen_width // 2
+        screen_y = (obj_y - self.y) * self.zoom + self.screen_height // 2
+        return int(screen_x), int(screen_y)
+
+    def get_relative_size(self, world_size: float) -> int:
+        """
+        Converts a world size (e.g., radius or width/height) to screen pixels.
+
+        :param world_size: Size in world units.
+        :return: Size in screen pixels.
+        """
+        return int(world_size * self.zoom)
